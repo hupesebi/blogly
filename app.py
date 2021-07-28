@@ -1,5 +1,6 @@
+
 from flask import Flask, redirect, request, render_template
-from models import db, connect_db, User
+from models import db, connect_db, User, Post
 from flask_debugtoolbar import DebugToolbarExtension
 
 app = Flask(__name__)
@@ -53,7 +54,8 @@ def show_user_details(user_id):
     """Show details of one user"""
 
     user = User.query.get_or_404(user_id)
-    return render_template('/users/user.html', user = user)
+    posts = Post.query.filter(Post.user_id == user_id).all()
+    return render_template('/users/user.html', user = user, posts = posts)
 
 
 @app.route ('/users/<int:user_id>/edit')
@@ -90,7 +92,57 @@ def delete_user(user_id):
     return redirect('/users')
 
 
+@app.route('/users/<int:user_id>/posts/new')
+def show_add_new_post(user_id):
+    user = User.query.get_or_404(user_id)
+    return render_template('posts/new_post.html', user = user)
 
 
+@app.route('/users/<int:user_id>/posts/new', methods=['POST'])
+def add_post(user_id):
+    title = request.form['title']
+    content = request.form['content']
+    newPost = Post(title = title, content = content, user_id = user_id)
+    
+    db.session.add(newPost)
+    db.session.commit()
+    return redirect(f'/users/{user_id}')
+
+
+@app.route('/posts/<int:post_id>')
+def show_post_details(post_id):
+    """Show details of one post"""
+
+    post = Post.query.get_or_404(post_id)
+    return render_template('posts/post.html',  post= post)
+
+
+@app.route('/posts/<int:post_id>/edit')
+def edit_post(post_id):
+    post = Post.query.get_or_404(post_id)
+
+    return render_template('posts/edit.html', post = post)
+
+
+@app.route('/posts/<int:post_id>/edit', methods=['POST'])
+def update_edited_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    post.title = request.form['title']
+    post.content = request.form['content']
+
+    db.session.add(post)
+    db.session.commit()
+
+    return redirect(f'/posts/{post_id}')
+
+@app.route('/posts/<int:post_id>/delete')
+def delete_post(post_id):
+    post = Post.query.get(post_id)
+    user_id = post.user_id
+
+    db.session.delete(post)
+    db.session.commit()
+
+    return redirect(f'/users/{user_id}')
 
 
