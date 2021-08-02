@@ -11,6 +11,12 @@
         <label for="content">Content:</label>
         <textarea name="content" id="content" cols="17" rows="5" required></textarea>
     </div>
+    {% for tag in tags %}
+    <div >
+      <input type="checkbox" id="{{tag.tag_id}}" name="tags" value="{{tag.id}}">
+      <label  for="tags">{{tag.name}}</label>
+    </div>
+  {% endfor %}
     <button>Add</button>
     
 </form>

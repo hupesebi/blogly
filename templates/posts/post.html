@@ -9,6 +9,15 @@
     <p> {{ post.user.full_name}}</p>
 </div>
 
+{% if post.tags %}
+<p>
+  <b>Tags:</b>
+  {% for tag in post.tags %}
+  <a href="/tags/{{ tag.id }}">{{ tag.name }}</a>
+  {% endfor %}
+</p>
+{% endif %}
+
 <div >
     <a href="/posts/{{post.id}}/edit"> <button> Edit </button> </a>
     <a href="/posts/{{post.id}}/delete"> <button> Delete </button> </a> 

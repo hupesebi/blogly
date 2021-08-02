@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %} Add new user {% endblock%}
+{% block content%}
+<h1>Edit tag:</h1>
+<form action="/tags/{{tag.id}}/edit" method="POST">
+    <div>
+        <label for="name"> name:</label>
+        <input id="name" type="text" name="name" value="{{tag.name}}" required>
+    </div>
+
+    <button>Submit</button>
+    
+</form>
+<a href="/tags/delete"><button>Delete</button></a>
+<a href="/tags/{{tag.id}}/delete"><button>Cancel</button></a>
+
+{% endblock %}
